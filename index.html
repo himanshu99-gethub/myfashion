@@ -129,20 +129,23 @@
     </header>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-primary/95 backdrop-blur-3xl z-[200] transform translate-x-full transition-transform duration-300 flex flex-col pt-24 px-8 md:hidden">
-        <button id="mobile-menu-close" class="absolute top-6 right-8 text-text-white hover:text-accent transition-colors">
-            <span class="material-symbols-outlined text-4xl">close</span>
-        </button>
+    <div id="mobile-menu" class="fixed inset-0 bg-primary/98 backdrop-blur-3xl z-[200] opacity-0 pointer-events-none transition-all duration-300 flex flex-col pt-20 px-8 md:hidden">
+        <div class="flex justify-between items-center mb-10">
+            <a href="index.html" class="text-3xl font-bebas tracking-widest text-accent">MYFASHION</a>
+            <button id="mobile-menu-close" class="text-text-white hover:text-accent transition-colors">
+                <span class="material-symbols-outlined text-4xl">close</span>
+            </button>
+        </div>
         
         <div class="relative w-full mb-10">
             <input type="text" id="mobile-search" placeholder="Search products..." class="search-input w-full py-4 bg-secondary/50 border border-white/10 rounded-2xl pl-14 text-text-white focus:border-accent outline-none">
             <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-text-muted text-xl">search</span>
         </div>
 
-        <div class="flex flex-col gap-8 text-center">
-            <a href="index.html" class="text-3xl font-bebas tracking-widest text-accent">Home</a>
-            <a href="shop.html" class="text-xl font-syne uppercase tracking-widest hover:text-accent transition-colors border-b border-white/10 pb-4">Shop</a>
-            <a href="admin_login.html" class="text-xl font-syne uppercase tracking-widest hover:text-accent transition-colors border-b border-white/10 pb-4">Admin Panel</a>
+        <div class="flex flex-col gap-6 text-left">
+            <a href="index.html" class="text-2xl font-syne uppercase tracking-widest hover:text-accent transition-colors border-b border-white/10 pb-4">Home</a>
+            <a href="shop.html" class="text-2xl font-syne uppercase tracking-widest hover:text-accent transition-colors border-b border-white/10 pb-4">Shop</a>
+            <a href="admin_login.html" class="text-2xl font-syne uppercase tracking-widest hover:text-accent transition-colors border-b border-white/10 pb-4">Admin Panel</a>
         </div>
     </div>
 
@@ -534,10 +537,12 @@
             
             if (mobileBtn && mobileClose && mobileMenu) {
                 mobileBtn.addEventListener('click', () => {
-                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = 'hidden';
                 });
                 mobileClose.addEventListener('click', () => {
-                    mobileMenu.classList.add('translate-x-full');
+                    mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
                 });
             }
         });
