@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MyFashion | Protocol Success</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="css/style.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#192230',
+                        'secondary': '#2c2f38',
+                        'card-bg': '#3d474e',
+                        'accent': '#ffcd00',
+                        'text-white': '#f4f4f2',
+                        'text-muted': '#9aa3ad'
+                    },
+                    fontFamily: {
+                        'bebas': ['Bebas Neue', 'sans-serif'],
+                        'syne': ['Syne', 'sans-serif'],
+                        'dm': ['DM Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .success-glow { box-shadow: 0 0 50px rgba(34, 197, 94, 0.2); }
+    </style>
+</head>
+<body class="bg-primary text-text-white font-dm min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-4xl w-full bg-secondary rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row border border-accent/5 shadow-2xl" data-reveal>
+        <div class="md:w-1/2 relative h-64 md:h-auto">
+            <img src="https://images.unsplash.com/photo-1551446591-142875a901a1?auto=format&fit=crop&q=80&w=2070" class="w-full h-full object-cover grayscale brightness-50" alt="Success">
+            <div class="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent"></div>
+            <div class="absolute bottom-10 left-10">
+                <span class="text-accent tracking-[0.4em] uppercase text-[10px] font-bold block mb-2">Protocol Complete</span>
+                <h2 class="text-4xl font-bebas tracking-widest text-white">THE MONOLITH <br> WELCOMES YOU</h2>
+            </div>
+        </div>
+        <div class="md:w-1/2 p-12 md:p-20 flex flex-col justify-center text-center md:text-left">
+            <div class="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mb-10 mx-auto md:mx-0 success-glow">
+                <span class="material-symbols-outlined text-success text-5xl">check_circle</span>
+            </div>
+            <h1 class="text-5xl font-bebas tracking-widest mb-2 uppercase">PAYMENT <span class="text-accent">AUTHORIZED</span></h1>
+            <p id="order-id-display" class="text-accent font-dm text-[10px] tracking-widest mb-6 opacity-80 uppercase font-bold">Transaction ID: Processing...</p>
+            <p class="text-text-muted mb-12 leading-relaxed uppercase tracking-tighter text-xs">
+                Your curation has been recorded. Our elite couriers are currently architecting your delivery experience.
+            </p>
+            <div class="space-y-4">
+                <a href="index.html" class="btn-primary w-full py-4 text-sm font-bold">RETURN TO ATELIER</a>
+                <a href="shop.html" class="btn-outline w-full py-4 text-sm font-bold">CONTINUE BROWSING</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('order_id');
+            if (orderId) {
+                document.getElementById('order-id-display').textContent = `Transaction ID: #${orderId.split('-')[0].toUpperCase()}`;
+            }
+        });
+    </script>
+
+    
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

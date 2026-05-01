@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin | Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="css/style.css?v=1.1" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#192230',
+                        'secondary': '#2c2f38',
+                        'card-bg': '#3d474e',
+                        'accent': '#ffcd00',
+                        'text-white': '#f4f4f2',
+                        'text-muted': '#9aa3ad',
+                        'success': '#22c55e',
+                        'error': '#ef4444'
+                    },
+                    fontFamily: { 'dm': ['DM Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #192230; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 205, 0, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 205, 0, 0.6); }
+        .sidebar-link.active { background-color: rgba(255, 205, 0, 0.1); border-right: 3px solid #ffcd00; color: #ffcd00; }
+        th { text-transform: uppercase; letter-spacing: 0.1em; font-size: 10px; color: #9aa3ad; padding: 0.75rem 1rem; text-align: left; }
+        td { padding: 0.75rem 1rem; border-top: 1px solid rgba(255,205,0,0.08); font-size: 12px; }
+        tr:hover td { background-color: rgba(255,205,0,0.02); }
+        /* Input & Form Styling - Standardized with Global Fix */
+        label { 
+            display: block; 
+            font-size: 10px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.2rem; 
+            color: #ffcd00; 
+            margin-bottom: 8px;
+            margin-left: 4px;
+            opacity: 0.9;
+        }
+
+        /* Fix for "Gandi" (Ugly) Autofill */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #1c2633 inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        /* Image Source Toggle */
+        .img-tab { cursor: pointer; padding: 8px 20px; border-radius: 99px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; border: 1px solid rgba(255,205,0,0.1); color: #9aa3ad; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(25, 34, 48, 0.5); }
+        .img-tab.active { background: #ffcd00; color: #000; border-color: #ffcd00; box-shadow: 0 4px 15px rgba(255,205,0,0.2); }
+        .img-tab:not(.active):hover { border-color: rgba(255,205,0,0.4); color: #fff; background: rgba(25, 34, 48, 0.8); }
+
+        /* Image Drop Zone */
+        #drop-zone {
+            border: 2px dashed rgba(255,205,0,0.15);
+            border-radius: 16px;
+            padding: 40px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(25, 34, 48, 0.3);
+        }
+        #drop-zone:hover, #drop-zone.drag-over { border-color: #ffcd00; background: rgba(255,205,0,0.05); transform: translateY(-2px); }
+        #img-preview { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; display: none; margin-top: 15px; border: 1px solid rgba(255,205,0,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        /* Toggle Switch */
+        .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+        .toggle { position: relative; width: 42px; height: 24px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; inset: 0; background: rgba(255,205,0,0.1); border-radius: 24px; cursor: pointer; transition: .3s; }
+        .slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: #9aa3ad; border-radius: 50%; transition: .3s; }
+        input:checked + .slider { background: #ffcd00; }
+        input:checked + .slider:before { transform: translateX(18px); background: #000; }
+        
+        .admin-page-load { display: none; }
+        .upload-icon-fix { display: block; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-primary text-text-white font-dm h-screen overflow-hidden flex admin-page-load">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-secondary flex flex-col h-full border-r border-accent/10 transition-all duration-300 flex-shrink-0 max-md:-ml-64 max-md:fixed max-md:z-50 max-md:left-0 max-md:-translate-x-full">
+        <div class="p-6 flex items-center justify-between border-b border-accent/10">
+            <h1 class="text-2xl font-bold tracking-widest text-accent uppercase">Admin</h1>
+            <button id="close-sidebar" class="md:hidden text-text-muted hover:text-accent"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <nav class="flex-1 py-6 flex flex-col gap-1">
+            <a href="admin.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="admin_products.html" class="sidebar-link active flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">inventory_2</span> Products
+            </a>
+            <a href="admin_users.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">group</span> Users
+            </a>
+            <a href="admin_orders.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">shopping_cart_checkout</span> Orders
+            </a>
+        </nav>
+        <div class="p-6 border-t border-accent/10">
+            <button id="btn-logout" class="w-full flex items-center gap-3 text-sm font-bold text-error uppercase tracking-widest hover:brightness-150 transition-colors">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+            <a href="index.html" class="text-xs text-text-muted mt-4 block text-center hover:text-accent">← Back to Store</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <header class="bg-secondary/80 backdrop-blur border-b border-accent/10 px-8 py-4 flex items-center justify-between z-40">
+            <button id="open-sidebar" class="md:hidden text-text-white hover:text-accent"><span class="material-symbols-outlined">menu</span></button>
+            <h2 class="text-lg font-bold tracking-widest hidden md:block uppercase">Products Management</h2>
+            <div class="flex items-center gap-6 ml-auto">
+                <div class="flex items-center gap-3 border-l border-accent/20 pl-6">
+                    <div class="w-8 h-8 rounded-full bg-card-bg border border-accent flex items-center justify-center font-bold text-accent text-xs">A</div>
+                    <span class="text-sm font-bold truncate hidden sm:block">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-primary">
+            <!-- Header Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h3 class="text-sm uppercase tracking-widest font-bold text-text-white">Product Inventory</h3>
+                    <p id="product-count-label" class="text-xs text-text-muted mt-1">Loading...</p>
+                </div>
+                <div class="flex gap-3">
+                    <input type="text" id="search-products" placeholder="Search products..." class="w-48 text-xs py-2 px-3 rounded-lg"/>
+                    <button onclick="openEditModal(null)" class="bg-accent text-black px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-white transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(255,205,0,0.3)]">
+                        <span class="material-symbols-outlined text-sm">add</span> Add Product
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="bg-card-bg rounded-xl border border-accent/10 overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap min-w-[900px]">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>SKU</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Trending</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody">
+                        <tr><td colspan="8" class="text-center py-12 text-text-muted">
+                            <div class="flex justify-center"><div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div></div>
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- ===== ADD PRODUCT MODAL ===== -->
+    <div id="add-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-primary/95 w-full max-w-2xl rounded-2xl border border-accent/20 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative flex flex-col max-h-[92vh] overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent/5 pointer-events-none"></div>
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-8 py-6 border-b border-accent/10 flex-shrink-0 relative z-10">
+                <h2 class="text-xl font-bold uppercase tracking-[0.2em] text-accent font-bebas">Product Editor</h2>
+                <button onclick="closeAddModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-accent/5 text-text-muted hover:bg-accent hover:text-black transition-all">
+                    <span class="material-symbols-outlined text-base">close</span>
+                </button>
+            </div>
+
+            <!-- Scrollable Form Body -->
+            <div class="overflow-y-auto flex-1 px-8 py-8 relative z-10">
+                <form id="add-product-form" class="space-y-6">
+                    
+                    <!-- Row 1: Name + SKU -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label>Product Name *</label>
+                            <input type="text" id="p-name" required placeholder="e.g. Velvet Blazer">
+                        </div>
+                        <div>
+                            <label>SKU (Stock Keeping Unit)</label>
+                            <input type="text" id="p-sku" placeholder="e.g. BLZ-VLV-001">
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Price + Original Price + Category -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label>Price (₹) *</label>
+                            <input type="number" id="p-price" required min="0" placeholder="4999">
+                        </div>
+                        <div>
+                            <label>Original Price (₹)</label>
+                            <input type="number" id="p-original-price" min="0" placeholder="6999">
+                        </div>
+                        <div>
+                            <label>Stock Quantity</label>
+                            <input type="number" id="p-stock" min="0" placeholder="100" value="100">
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Category -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label>Category *</label>
+                            <input type="text" id="p-category" required placeholder="e.g. Men, Watches, Bags" list="category-list">
+                            <datalist id="category-list"></datalist>
+                        </div>
+                        <div>
+                            <label>Rating (1–5)</label>
+                            <input type="number" id="p-rating" min="1" max="5" step="0.1" placeholder="4.5" value="4.5">
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Description -->
+                    <div>
+                        <label>Description</label>
+                        <textarea id="p-description" rows="2" placeholder="Short product description..."></textarea>
+                    </div>
+
+                    <!-- Row 5: Image Section -->
+                    <div>
+                        <label class="mb-3 block">Product Image *</label>
+                        
+                        <!-- Toggle Tabs -->
+                        <div class="flex gap-2 mb-4">
+                            <button type="button" id="tab-url" class="img-tab active" onclick="switchImageTab('url')">🔗 Image URL</button>
+                            <button type="button" id="tab-file" class="img-tab" onclick="switchImageTab('file')">💻 Upload from Computer</button>
+                        </div>
+
+                        <!-- URL Input -->
+                        <div id="url-input-section">
+                            <input type="url" id="p-image-url" placeholder="https://images.unsplash.com/...">
+                            <p class="text-[10px] text-text-muted mt-1">Paste any image URL from Unsplash, Google, etc.</p>
+                        </div>
+
+                        <!-- File Upload Section -->
+                        <div id="file-input-section" class="hidden">
+                            <div id="drop-zone" onclick="document.getElementById('p-image-file').click()">
+                                <input type="file" id="p-image-file" accept="image/*" class="hidden">
+                                <span class="material-symbols-outlined text-3xl text-text-muted upload-icon-fix">upload_file</span>
+                                <p class="text-text-muted text-xs">Click to browse or drag & drop an image</p>
+                                <p class="text-[10px] text-text-muted mt-1">Supports JPG, PNG, WebP, GIF</p>
+                            </div>
+                            <img id="img-preview" src="" alt="Preview">
+                            <p id="file-name-label" class="text-[10px] text-text-muted mt-2 hidden"></p>
+                        </div>
+                    </div>
+
+                    <!-- Row 6: Toggles -->
+                    <div class="flex gap-8 pt-2">
+                        <div class="toggle-wrap">
+                            <label class="toggle">
+                                <input type="checkbox" id="p-trending">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-xs font-bold uppercase tracking-widest">Trending</span>
+                        </div>
+                        <div class="toggle-wrap">
+                            <label class="toggle">
+                                <input type="checkbox" id="p-featured">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-xs font-bold uppercase tracking-widest">Featured</span>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-8 py-6 border-t border-accent/10 flex-shrink-0 flex gap-4 bg-secondary/30 relative z-10">
+                <button type="button" onclick="closeAddModal()" class="flex-1 py-3 text-text-muted rounded-full text-xs font-bold uppercase tracking-widest hover:text-white transition-all">
+                    Cancel Task
+                </button>
+                <button type="button" onclick="submitProduct()" class="flex-[2] bg-accent text-black font-bold py-3 rounded-full uppercase tracking-widest hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,205,0,0.2)]">
+                    <span class="material-symbols-outlined text-sm font-bold">check_circle</span> Finish & Save Product
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/admin_panel.js"></script>
+
+    <script>
+        // ===== IMAGE TAB TOGGLE =====
+        function switchImageTab(tab) {
+            const urlSection = document.getElementById('url-input-section');
+            const fileSection = document.getElementById('file-input-section');
+            const tabUrl = document.getElementById('tab-url');
+            const tabFile = document.getElementById('tab-file');
+
+            if (tab === 'url') {
+                urlSection.classList.remove('hidden');
+                fileSection.classList.add('hidden');
+                tabUrl.classList.add('active');
+                tabFile.classList.remove('active');
+            } else {
+                urlSection.classList.add('hidden');
+                fileSection.classList.remove('hidden');
+                tabUrl.classList.remove('active');
+                tabFile.classList.add('active');
+            }
+        }
+
+        // File Upload Preview
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('p-image-file');
+            const preview = document.getElementById('img-preview');
+            const fileLabel = document.getElementById('file-name-label');
+            const dropZone = document.getElementById('drop-zone');
+
+            fileInput?.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                handleFilePreview(file);
+            });
+
+            // Drag and Drop
+            dropZone?.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+            dropZone?.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+            dropZone?.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) handleFilePreview(file);
+            });
+        });
+
+        function handleFilePreview(file) {
+            const preview = document.getElementById('img-preview');
+            const fileLabel = document.getElementById('file-name-label');
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                preview.src = ev.target.result;
+                preview.style.display = 'block';
+                if (fileLabel) { fileLabel.textContent = '✓ ' + file.name; fileLabel.classList.remove('hidden'); }
+            };
+            reader.readAsDataURL(file);
+        }
+
+    </script>
+</body>
+</html>

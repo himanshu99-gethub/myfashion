@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="css/style.css?v=1.1" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#192230',
+                        'secondary': '#2c2f38',
+                        'card-bg': '#3d474e',
+                        'accent': '#ffcd00',
+                        'text-white': '#f4f4f2',
+                        'text-muted': '#9aa3ad',
+                        'success': '#22c55e',
+                        'error': '#ef4444'
+                    },
+                    fontFamily: { 'dm': ['DM Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 205, 0, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 205, 0, 0.6); }
+        .sidebar-link.active { background-color: rgba(255, 205, 0, 0.1); border-right: 3px solid #ffcd00; color: #ffcd00; }
+        .admin-page-load { display: none; }
+    </style>
+</head>
+<body class="bg-primary text-text-white font-dm h-screen overflow-hidden flex admin-page-load">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-secondary flex flex-col h-full border-r border-accent/10 transition-all duration-300 flex-shrink-0 max-md:-ml-64 max-md:fixed max-md:z-50 max-md:left-0 max-md:-translate-x-full">
+        <div class="p-6 flex items-center justify-between border-b border-accent/10">
+            <h1 class="text-2xl font-bold tracking-widest text-accent uppercase">Admin</h1>
+            <button id="close-sidebar" class="md:hidden text-text-muted hover:text-accent"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <nav class="flex-1 py-6 flex flex-col gap-2">
+            <a href="admin.html" class="sidebar-link active flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="admin_products.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">inventory_2</span> Products
+            </a>
+            <a href="admin_users.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">group</span> Users
+            </a>
+            <a href="admin_orders.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors hover:bg-accent/5 hover:text-accent">
+                <span class="material-symbols-outlined">shopping_cart_checkout</span> Orders
+            </a>
+        </nav>
+        <div class="p-6 border-t border-accent/10">
+            <button id="btn-logout" class="w-full flex items-center gap-3 text-sm font-bold text-error uppercase tracking-widest hover:brightness-150 transition-colors">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+            <a href="index.html" class="text-xs text-text-muted mt-4 block text-center hover:text-accent">Back to Store</a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <header class="bg-secondary/80 backdrop-blur border-b border-accent/10 px-8 py-4 flex items-center justify-between z-40">
+            <button id="open-sidebar" class="md:hidden text-text-white hover:text-accent"><span class="material-symbols-outlined">menu</span></button>
+            <h2 class="text-lg font-bold tracking-widest hidden md:block uppercase">Dashboard Overview</h2>
+            <div class="flex items-center gap-6 ml-auto">
+                <button class="relative text-text-muted hover:text-accent transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="flex items-center gap-3 border-l border-accent/20 pl-6">
+                    <div class="w-8 h-8 rounded-full bg-card-bg border border-accent flex items-center justify-center font-bold text-accent">A</div>
+                    <span class="text-sm font-bold truncate hidden sm:block">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-primary">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Stat Cards -->
+                <div class="bg-card-bg border border-accent/10 rounded-2xl p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] text-text-muted uppercase tracking-widest mb-1">Total Users</p>
+                        <h3 class="text-3xl font-bold text-text-white" id="stat-users">-</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                        <span class="material-symbols-outlined">group</span>
+                    </div>
+                </div>
+
+                <div class="bg-card-bg border border-accent/10 rounded-2xl p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] text-text-muted uppercase tracking-widest mb-1">Total Products</p>
+                        <h3 class="text-3xl font-bold text-text-white" id="stat-products">-</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                        <span class="material-symbols-outlined">inventory_2</span>
+                    </div>
+                </div>
+
+                <div class="bg-card-bg border border-accent/10 rounded-2xl p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] text-text-muted uppercase tracking-widest mb-1">Total Orders</p>
+                        <h3 class="text-3xl font-bold text-text-white" id="stat-orders">-</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                        <span class="material-symbols-outlined">shopping_cart_checkout</span>
+                    </div>
+                </div>
+
+                <div class="bg-card-bg border border-accent/10 rounded-2xl p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-[10px] text-text-muted uppercase tracking-widest mb-1">Revenue</p>
+                        <h3 class="text-3xl font-bold text-accent" id="stat-revenue">-</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-card-bg border border-accent/10 rounded-2xl p-6">
+                    <h3 class="text-xs text-text-white uppercase tracking-widest mb-6 font-bold">Revenue Trend</h3>
+                    <div class="h-64 relative w-full">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-card-bg border border-accent/10 rounded-2xl p-6">
+                    <h3 class="text-xs text-text-white uppercase tracking-widest mb-6 font-bold">Order Volume</h3>
+                    <div class="h-64 relative w-full">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/admin_panel.js"></script>
+</body>
+</html>

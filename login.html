@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MyFashion | Secure Access</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="css/style.css?v=1.1" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#192230',
+                        'secondary': '#2c2f38',
+                        'card-bg': '#3d474e',
+                        'accent': '#ffcd00',
+                        'text-white': '#f4f4f2',
+                        'text-muted': '#9aa3ad'
+                    },
+                    fontFamily: {
+                        'bebas': ['Bebas Neue', 'sans-serif'],
+                        'syne': ['Syne', 'sans-serif'],
+                        'dm': ['DM Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .auth-card { background: rgba(25, 34, 48, 0.95); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(255, 205, 0, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .tab-btn { color: rgba(255, 255, 255, 0.4); border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .tab-btn.active { border-bottom: 2px solid var(--yellow); color: var(--yellow); background: rgba(255, 205, 0, 0.03); }
+        
+        input {
+            background: #1c2633 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            padding-top: 14px !important;
+            padding-bottom: 14px !important;
+            border-radius: 12px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3) !important;
+        }
+        input:focus {
+            background: rgba(255, 255, 255, 0.07) !important;
+            border-color: var(--yellow) !important;
+            box-shadow: 0 0 20px rgba(255, 205, 0, 0.1), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+            transform: translateY(-1px);
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.4) !important; }
+
+        /* Autofill Fix */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #1c2633 inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+<body class="bg-primary text-text-white font-dm min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full auth-card rounded-2xl shadow-2xl overflow-hidden" data-reveal>
+        <!-- Tabs -->
+        <div class="flex border-b border-accent/10">
+            <button id="login-tab" class="flex-1 py-4 text-xs font-bold uppercase tracking-widest tab-btn active">Login</button>
+            <button id="signup-tab" class="flex-1 py-4 text-xs font-bold uppercase tracking-widest tab-btn">Sign Up</button>
+        </div>
+
+        <div class="p-10">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bebas tracking-widest text-accent mb-2">MYFASHION</h1>
+                <p id="auth-subtitle" class="text-xs text-text-muted uppercase tracking-widest italic">Welcome back to the atelier</p>
+            </div>
+
+            <form id="auth-form" class="space-y-6">
+                <div id="signup-fields" class="hidden space-y-6">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-text-muted mb-2 ml-1">Full Name</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-lg">person</span>
+                            <input id="full-name" type="text" placeholder="Evelyn Thorne" class="w-full !pl-12">
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="block text-[10px] uppercase tracking-widest text-text-muted mb-2 ml-1">Gender</label>
+                            <div class="relative">
+                                <select id="gender" class="w-full bg-[#1c2633] border border-white/10 text-white pt-[14px] pb-[14px] pl-4 rounded-xl transition-all duration-300 focus:border-accent focus:bg-white/5 outline-none appearance-none" style="background-color: #1c2633; border: 1px solid rgba(255, 255, 255, 0.1); color: white;">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block text-[10px] uppercase tracking-widest text-text-muted mb-2 ml-1">City</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-lg">location_city</span>
+                                <input id="city" type="text" placeholder="New York" class="w-full !pl-12">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-text-muted mb-2 ml-1">Email Address</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-lg">mail</span>
+                        <input id="email" type="email" placeholder="name@example.com" required class="w-full !pl-12">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-text-muted mb-2 ml-1">Password</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted text-lg">lock</span>
+                        <input id="password" type="password" placeholder="••••••••" required class="w-full !pl-12">
+                    </div>
+                </div>
+
+                <div id="login-extras" class="flex justify-between items-center text-[10px] uppercase tracking-widest font-bold">
+                    <label class="flex items-center gap-2 cursor-pointer text-text-muted hover:text-text-white transition-colors">
+                        <input type="checkbox" class="accent-accent"> Remember Me
+                    </label>
+                    <a href="#" class="text-accent hover:underline">Forgot Password?</a>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn-primary w-full py-4 text-sm font-bold">
+                    Login
+                </button>
+            </form>
+
+            <div class="relative py-8 flex items-center">
+                <div class="flex-grow border-t border-accent/10"></div>
+                <span class="flex-shrink mx-4 text-[10px] uppercase tracking-widest text-text-muted font-bold">or continue with</span>
+                <div class="flex-grow border-t border-accent/10"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <button id="google-auth-btn" class="btn-outline py-3 flex items-center justify-center gap-2 text-[10px]">
+                    <img src="https://www.google.com/favicon.ico" class="w-4 h-4" alt="Google">
+                    Google
+                </button>
+                <button class="btn-outline py-3 flex items-center justify-center gap-2 text-[10px]">
+                    <img src="https://github.com/favicon.ico" class="w-4 h-4 invert" alt="GitHub">
+                    GitHub
+                </button>
+            </div>
+        </div>
+    </div>
+
+        
+    
+    
+    <script type="module">
+        const loginTab = document.getElementById('login-tab');
+        const signupTab = document.getElementById('signup-tab');
+        const signupFields = document.getElementById('signup-fields');
+        const loginExtras = document.getElementById('login-extras');
+        const submitBtn = document.getElementById('submit-btn');
+        const authSubtitle = document.getElementById('auth-subtitle');
+
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            signupFields.classList.add('hidden');
+            loginExtras.classList.remove('hidden');
+            submitBtn.textContent = 'Login';
+            authSubtitle.textContent = 'Welcome back to the atelier';
+        });
+
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            signupFields.classList.remove('hidden');
+            loginExtras.classList.add('hidden');
+            submitBtn.textContent = 'Create Account';
+            authSubtitle.textContent = 'Join the inner circle';
+        });
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>
